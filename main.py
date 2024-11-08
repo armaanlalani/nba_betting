@@ -1,11 +1,28 @@
 from player_utils import *
 from team_utils import *
 from game_utils import *
+from gpt import *
 
 if __name__ == '__main__':
     nba_players = get_player_df()
     nba_teams = get_team_df()
-    start_year, end_year = 2010, 2024
+    player_columns = nba_players.columns.tolist()
+    team_columns = nba_teams.columns.tolist()
+
+    user_query = 'How many times has Anthony Davis scored over 40 points over the last 10 years'
+
+    gpt_query = f'From the user query: "{user_query}", can you extract the name of the NBA player we are interested in (only provide the name, no other text)?'
+    client, conversation_history, player_name = make_a_query(client, conversation_history, gpt_query)
+    print(player_name)
+
+    gpt_query = f'Using the players name: "{player_name}" and the dataframe "nba_players" with columns: "{player_columns}", write me a query that gets the associated player id for the player? (only return the code, no other text)'
+    client, conversation_history, player_id_query = make_a_query(client, conversation_history, gpt_query)
+    print(player_id_query)
+
+    gpt_query = f'Based on the user query: "{user_query}", can you return a list of years that should be queried? (only return the list)'
+    client, conversation_history, years = make_a_query(client, conversation_history, gpt_query)
+    print(years)
+    exit(0)
 
     while True:
         try:
